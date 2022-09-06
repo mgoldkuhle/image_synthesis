@@ -1,0 +1,35 @@
+1. install Visual Studio 2017(!) Community Edition with C++ developer tools (cmake and c++ compiler)
+2. add the VS directory that looks like C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\Hostx64\x64 to the Windows PATH variable
+3. install CUDA v10.3.0 via the NVIDIA installer with all boxes ticked
+4. add C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\include and bin to Windows PATH variable
+5. install anaconda3 and change pyCharm shell path to anaconda3 directory
+6. after editing the PATH variable restart pyCharm
+7. check if nvcc works correctly: nvcc test_nvcc.cu -o test_nvcc -run
+8. create new conda environment with python 3.7.3
+9. pip install dlib==19.18.0 keras==2.3.0 imageio==2.5.0 imageio-ffmpeg==0.3.0 tqdm==4.31.1
+10. conda install matplotlib=3.0.3 pillow=6.0.0 requests=2.21.0 tensorflow-gpu=1.14.0
+11. should be good to go, test with stylegan2 generator e.g.:
+
+python run_generator.py generate-images --network=./stylegan2-ffhq-config-f.pkl \
+--seeds=69 --truncation-psi=0.5 --result-dir=../results
+
+pre-trained networks: https://drive.google.com/open?id=1QHc-yF5C3DChRwSdZKcx1w6K8JvSxQi7
+
+stylegan2-ada-pytorch on xcat:
+
+1. create new conda environment with python 3.7.3
+2. pip install click requests tqdm pyspng ninja imageio-ffmpeg==0.4.3
+3. conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 cudatoolkit=11.0 -c pytorch
+4. install nvcc: conda install -c conda-forge cudatoolkit-dev
+5. check if nvcc works correctly: nvcc test_nvcc.cu -o test_nvcc -run
+6. test with generator:
+
+python generate.py --network=./pretrained/ffhq.pkl --seeds=69 --trunc=0.5 --outdir=../results
+
+pre-trained networks: https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/
+
+optionally to use this conda environment in jupyter notebook: 
+
+(base)$ conda activate cenv
+(cenv)$ conda install ipykernel
+(cenv)$ ipython kernel install --user --name=<any_name_for_kernel>
