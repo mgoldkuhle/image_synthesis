@@ -1,5 +1,5 @@
 # for a given fraction p, split all data in a directory into a training (p) directory and a test (1-p) directory randomly
-# output directories have to exit before running the script
+# output directories have to exist before running the script, all images have to be .jpg or .png
 
 import argparse
 import os
@@ -16,6 +16,7 @@ args = parser.parse_args()
 if __name__ == '__main__':
     in_path = args.in_path
     file_names = os.listdir(in_path)
+    file_names = [name for name in file_names if '.jpg' in name or '.png' in name]  # remove directories and non-images from file list
 
     # split file list in train and test
     frac = args.frac
@@ -28,9 +29,12 @@ if __name__ == '__main__':
     out_path_test = args.out_test
 
     for file in train_files:
-        shutil.copy(os.path.join(in_path, file), f'{out_path_train}/{file}')
+        print(file)
+        assert os.path.isfile(os.path.join(in_path, file))
+        shutil.copy(os.path.join(in_path, file), out_path_train)
 
     for file in test_files:
-        shutil.copy(os.path.join(in_path, file), f'{out_path_test}/{file}')
+        assert os.path.isfile(os.path.join(in_path, file))
+        shutil.copy(os.path.join(in_path, file), out_path_test)
 
 
