@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import shutil
 
-syndromes = pd.read_table('../data/v1_0_2/metadata/gmdb_syndromes_v1.0.2.tsv')
+syndromes = pd.read_table('data/v1_0_2/metadata/gmdb_syndromes_v1.0.2.tsv')
 
 # turn image_ids string to list of image_ids
 syndromes['image_ids'] = syndromes['image_ids'].apply(lambda x: x.replace(x[0], ''))
@@ -25,6 +25,6 @@ for item in syndrome_list:
 
 # copy syndrome images to separate dir
 for i, syndrome in enumerate(syndrome_files):
-    os.mkdir(f'data/crops_256_{syndrome_list[i]}')
+#   os.mkdir(f'data/crops_256_{syndrome_list[i]}')  # somehow breaks the code sometimes. just create the dirs manually
     for file in syndrome:
-        shutil.copy(os.path.join('data/crops_256', file), f'data/crops_256_{syndrome_list[i]}')
+        shutil.copy(os.path.join('data/crops_256', file), f'data/bootstrap/crops_256_{syndrome_list[i]}/{file}')
