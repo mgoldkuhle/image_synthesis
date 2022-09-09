@@ -24,6 +24,7 @@ if __name__ == '__main__':
     image_path1 = args.path1  # "D:/Users/Manu/ownCloud/IGSB/thesis/python/results/CdL_256_paper256_2000kimg/samples/seed0627.png"
     image_path2 = args.path2  # "D:/Users/Manu/ownCloud/IGSB/thesis/data/crops_256_cdl/4904.jpg"
     model_name = args.model
+    out_path = args.out
 
     if os.path.isfile(image_path1) and os.path.isfile(image_path2):
         embedding = DeepFace.represent(image_path1, model_name, enforce_detection=False)
@@ -48,6 +49,7 @@ if __name__ == '__main__':
         similarities = pd.DataFrame(similarities)
         similarities.sort_values(by='similarity', ascending=False, inplace=True)
         print(similarities)
+        similarities.to_csv(os.path.join(out_path, 'similarities.csv'))
 
     elif os.path.isdir(image_path1) and os.path.isdir(image_path2):
         similarities = {'file1': [], 'file2': [], 'similarity': []}
@@ -76,6 +78,7 @@ if __name__ == '__main__':
         similarities = pd.DataFrame(similarities)
         similarities.sort_values(by='similarity', ascending=False, inplace=True)
         print(similarities)
+        similarities.to_csv(os.path.join(out_path, 'similarities.csv'))
 
     else:
 
