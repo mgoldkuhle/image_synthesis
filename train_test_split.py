@@ -36,5 +36,3 @@ if __name__ == '__main__':
     for file in test_files:
         assert os.path.isfile(os.path.join(in_path, file))
         shutil.copy(os.path.join(in_path, file), out_path_test)
-
-

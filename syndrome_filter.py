@@ -25,6 +25,11 @@ for item in syndrome_list:
 
 # copy syndrome images to separate dir
 for i, syndrome in enumerate(syndrome_files):
+    target_path = f'data/crops_256_{syndrome_list[i]}'
+    print(f'Next images copied to: {target_path}')
 #   os.mkdir(f'data/crops_256_{syndrome_list[i]}')  # somehow breaks the code sometimes. just create the dirs manually
     for file in syndrome:
-        shutil.copy(os.path.join('data/crops_256', file), f'data/bootstrap/crops_256_{syndrome_list[i]}/{file}')
+        target_image = os.path.join('data/crops_256', file)
+        print(f'Copying {target_image}')
+        shutil.copy(target_image, target_path)
+
