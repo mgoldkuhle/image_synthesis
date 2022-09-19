@@ -1,4 +1,5 @@
-# filter unsorted patient .jpg images in a folder per patient as given in the metadata file
+# split data for k-fold cross-validation patient-wise
+# filter unsorted patient .jpg images in a folder per patient (subject) as given in the metadata file
 import argparse
 import pandas as pd
 import os

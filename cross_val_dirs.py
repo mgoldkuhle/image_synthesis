@@ -1,4 +1,4 @@
-# copy folded patient .jpg images created by patient_split.py in a directory structure to be used in stylegan2 training
+# copy folded patient .jpg images created by patient_split.py in a directory structure to be used in stylegan2 training with cross-validation
 import argparse
 import os
 import shutil
