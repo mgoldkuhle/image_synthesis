@@ -6,10 +6,11 @@ import os
 import shutil
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--in_path', default='../data', help='Path for the images to be compared to. Can be directory of images or single image file')
-parser.add_argument('--out_path', default='../data/folds', help='Directory for the images to compare. Can be directory of images or single image file')
+parser.add_argument('--in_path', default='../data', help='Path for the unsorted images')
+parser.add_argument('--out_path', default='../data/folds', help='Directory for the images split by fold')
 parser.add_argument('--k', default=5, type=int, help='Number of folds to be used in k-fold cross-validation. The data will be divided into k folds')
 parser.add_argument('--syndromes', default=[0, 1, 2, 3, 12], type=list, help='Select which syndromes your data covers as integer indices in the metadata')
+parser.add_argument('--seed', default=None, type=int, help='Optional seed to use for shuffling the patients')
 args = parser.parse_args()
 
 if __name__ == '__main__':
@@ -30,12 +31,13 @@ if __name__ == '__main__':
     folds = list(range(1, k + 1))
 
     out_path = args.out_path
+    seed = args.seed
 
     for i in syndrome_list:
         syndrome_ids = ids[ids['label'] == i]
         unique_patients = syndrome_ids.drop_duplicates(subset='subject', keep='first')
         unique_patients = unique_patients.drop(['image_id', 'label'], axis=1)
-        unique_patients = unique_patients.sample(frac=1)  # shuffle unique subjects
+        unique_patients = unique_patients.sample(frac=1, random_state=seed)  # shuffle unique subjects
         out_length = len(unique_patients)
         unique_patients['fold'] = [folds * out_length][0][:out_length]  # assign fold 1 to k to each subject
         ids_folds = pd.merge(syndrome_ids, unique_patients, on='subject', how='left')  # merge folds and image_ids by subject
