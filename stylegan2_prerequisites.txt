@@ -2,7 +2,7 @@
 2. add the VS directory that looks like C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\Hostx64\x64 to the Windows PATH variable
 3. install CUDA v10.3.0 via the NVIDIA installer with all boxes ticked
 4. add C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\include and bin to Windows PATH variable
-5. install anaconda3 and change pyCharm shell path to anaconda3 directory
+5. install anaconda3 and change pyCharm shell path to anaconda3 directory in settings>tools>terminal to cmd.exe "/K" C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3
 6. after editing the PATH variable restart pyCharm
 7. check if nvcc works correctly: nvcc test_nvcc.cu -o test_nvcc -run
 8. create new conda environment with python 3.7.3
