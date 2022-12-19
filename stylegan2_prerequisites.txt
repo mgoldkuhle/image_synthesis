@@ -6,7 +6,8 @@
 6. after editing the PATH variable restart pyCharm
 7. check if nvcc works correctly: nvcc test_nvcc.cu -o test_nvcc -run
 8. create new conda environment with python 3.7.3
-9. pip install dlib==19.18.0 keras==2.3.0 imageio==2.5.0 imageio-ffmpeg==0.3.0 tqdm==4.31.1
+8.2 conda install -c conda-forge dlib==19.18.0
+9. pip install keras==2.3.0 imageio==2.5.0 imageio-ffmpeg==0.3.0 tqdm==4.31.1
 10. conda install matplotlib=3.0.3 pillow=6.0.0 requests=2.21.0 tensorflow-gpu=1.14.0
 11. should be good to go, test with stylegan2 generator e.g.:
 
