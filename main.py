@@ -6,3 +6,4 @@
 # python dataset_tool.py --source ../../data/crops_256_cond.zip --dest ../../data/cond.zip
 
 # python run_training.py --data-dir=../../data/datasets --dataset=crops128 --config=config-f --total-kimg 1 --resume-pkl=./stylegan2-ffhq-config-f.pkl
+
