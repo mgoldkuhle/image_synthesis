@@ -21,8 +21,8 @@ def cosine_similarity(a, b):
 
 
 if __name__ == '__main__':
-    image_path1 = args.path1  # "D:/Users/Manu/ownCloud/IGSB/thesis/python/results/CdL_256_paper256_2000kimg/samples/seed0627.png"
-    image_path2 = args.path2  # "D:/Users/Manu/ownCloud/IGSB/thesis/data/crops_256_cdl/4904.jpg"
+    image_path1 = args.path1  # "C:/Users/Manu/ownCloud/IGSB/thesis/synthesis/results/CdL_256_paper256_2000kimg/samples/seed0627.png"
+    image_path2 = args.path2  # "C:/Users/Manu/ownCloud/IGSB/thesis/data/crops_256_cdl/4904.jpg"
     model_name = args.model
     out_path = args.out
 
