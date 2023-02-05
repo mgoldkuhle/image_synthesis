@@ -1,3 +1,5 @@
+# run with python main.py --dataset_dir_path ../../data/cross_validation/1 --train_dir_path justweightedsynth --target_model_dir saved_models/classifier/cross_validation_1_1_justweightedsynth
+
 import argparse
 import datetime
 import random
@@ -57,9 +59,9 @@ def verification_loss(representation_vectors, class_labels):
 def parse_args():
     parser = argparse.ArgumentParser(description='Script to train gestalt classifer')
     parser.add_argument('--batch-size', type=int, default=32, metavar='N',
-                        help='input batch size for training (default: 4)')
-    parser.add_argument('--epochs', type=int, default=500, metavar='N',
-                        help='number of epochs to train (default: 500)')
+                        help='input batch size for training')
+    parser.add_argument('--epochs', type=int, default=300, metavar='N',
+                        help='number of epochs to train (default: 300)')
     parser.add_argument('--lr', type=float, default=5e-3, metavar='LR',  # lr=1e-3
                         help='learning rate (default: 0.005)')
     parser.add_argument('--no-cuda', action='store_true', default=False,
@@ -87,31 +89,23 @@ def parse_args():
     # parser.add_argument('--alpha', default=0.0, dest='alpha') # verification loss unused ..
     parser.add_argument('--dataset', default='gmdb', dest='dataset',
                         help='Which dataset to use. (Options: "casia", "gmdb", "gmdb_aug")')
-
     parser.add_argument('--use_tensorboard', action='store_true', default=True,
                         help='Use tensorboard for logging')
-    #Todo: paths needs to be consistent across source codes - refactoring required
-    # parser.add_argument('--dataset_dir_path', dest='data_dir',
-    #                     default='/home/ash/HBRS/MastersThesis/FacialPhenotypeSynthesis/Datasets/GMDB',
-    #
-    #
-    #                     help='path to the dataset\'s directory')
     parser.add_argument('--dataset_dir_path', dest='data_dir',
                         default='../../data/original',
                         help='path to the dataset\'s directory')
-    # Todo: directory mode only applicable for gmdb
+    parser.add_argument('--train_dir_path', dest='train_dir',
+                        default='train',
+                        help='name of the training data folder')
     parser.add_argument('--img_load_src', type=str, dest='img_load_src', choices=['csv','directory'],
                         default='directory', help='src to obtain the train, test and dev list')
     parser.add_argument('--pretrained_model_dir', type=str, dest='pretrained_model_dir', default='./saved_models',
                         help='Directory of the pre-trained model used for transfer learning')
-
     parser.add_argument('--target_model_dir', type=str, dest='target_model_dir',
                         default='saved_models/classifier/gestalt_classifier_0_1_2_3_12',
                         help='Directory to save the model snapshots')
-
     parser.add_argument('--load_pretrained', action='store_true', default=True, dest='load_pretrained',
                         help='Enable to continue training on top of a pretrained model')
-
     parser.add_argument('--pretrained_model', type=str, default='./saved_models/s1_casia_adam_FaceRecogNet_e50_ReLU_BN_bs100.pt',
                         dest='pretrained_model', help='Enable to continue training on top of a pretrained model')
 
@@ -126,8 +120,9 @@ def train(args, model, device, train_loader, optimizer, epochs=-1, val_loader=No
 
     # Tensorboard Writer
     if args.use_tensorboard:
+        session_name = args.target_model_dir.rpartition('/')[2]
         writer = SummaryWriter(
-            comment=f"s{args.session}_{args.model_type}_{args.act_type}_bs{args.batch_size}")
+            comment=f"{session_name}")  # removed 'comment' parameter so the computer name isn't included
     global_step = 0
 
     if epochs == -1:
@@ -136,19 +131,19 @@ def train(args, model, device, train_loader, optimizer, epochs=-1, val_loader=No
     for epoch in range(1, epochs + 1):
         epoch_loss = 0.
         for batch_idx, (data, target) in enumerate(train_loader):
-            #data dim. Nx1x100x100
+            # data dim. Nx1x100x100
             data = data.to(device, dtype=torch.float32)
-            #target Nx1
+            # target Nx1
             target = target.to(device, dtype=torch.int64).unsqueeze(1)
 
             # writer.add_graph(model, data)
             # writer.close()
-            #pred NxC pred_rep Nx320
+            # pred NxC pred_rep Nx320
             pred, pred_rep = model(data)
-            #Pytorch's implementation of cross_entropy inherently uses log-sum-exp rule to directly deal with logits
-            #in place of softmax probabilities
-            loss = F.cross_entropy(pred, target.view(-1), weight=args.ce_weights) #\
-                   # + args.alpha * verification_loss(pred_rep, target) # - verification loss currently unused
+            # Pytorch's implementation of cross_entropy inherently uses log-sum-exp rule to directly deal with logits
+            # in place of softmax probabilities
+            loss = F.cross_entropy(pred, target.view(-1), weight=args.ce_weights)
+
             loss.backward()
 
             # Clipping gradients here, if we get exploding gradients we should revise...
@@ -171,14 +166,14 @@ def train(args, model, device, train_loader, optimizer, epochs=-1, val_loader=No
 
             if val_loader:
                 if (batch_idx + 1) % args.val_interval == 0:
-                    #avg_val_loss, t_acc, t5_acc = validate(model, device, val_loader, args)
+                    # avg_val_loss, t_acc, t5_acc = validate(model, device, val_loader, args)
                     avg_val_loss, t_acc, cm = validate(model, device, val_loader, args)
                     tick = datetime.datetime.now()
 
                     if args.use_tensorboard:
                         writer.add_scalar('Val/ce_loss', avg_val_loss, global_step)
                         writer.add_scalar('Val/top_acc', t_acc, global_step)
-                        #writer.add_scalar('Val/top_5_acc', t5_acc, global_step)
+                        # writer.add_scalar('Val/top_5_acc', t5_acc, global_step)
                         writer.add_figure("Confusion matrix", cm, global_step)
 
             global_step += args.batch_size
@@ -191,26 +186,28 @@ def train(args, model, device, train_loader, optimizer, epochs=-1, val_loader=No
         if scheduler:
             scheduler.step()
 
-        ## gradually increase alpha each epoch - currently unused
+        # gradually increase alpha each epoch - currently unused
         # args.alpha *= 1.065
 
         # Save model        
         print(
             f"Saving model in: {args.target_model_dir}/s{args.session}_{args.dataset}_adam_{args.model_type}_e{epoch}"
             f"_{args.act_type}_bs{args.batch_size}.pt")
+        if not os.path.exists(args.target_model_dir):
+            os.makedirs(args.target_model_dir)
         torch.save(
             model.state_dict(),
             f"{args.target_model_dir}/s{args.session}_{args.dataset}_adam_{args.model_type}_e{epoch}"
             f"_{args.act_type}_bs{args.batch_size}.pt")
 
         # Plot the performance on the validation set
-        #avg_val_loss, t_acc, t5_acc = validate(model, device, val_loader, args)
+        # avg_val_loss, t_acc, t5_acc = validate(model, device, val_loader, args)
         avg_val_loss, t_acc, cm = validate(model, device, val_loader, args)
 
         if args.use_tensorboard:
             writer.add_scalar('Val/ce_loss', avg_val_loss, global_step)
             writer.add_scalar('Val/top_acc', t_acc, global_step)
-            #writer.add_scalar('Val/top_5_acc', t5_acc, global_step)
+            # writer.add_scalar('Val/top_5_acc', t5_acc, global_step)
             writer.add_figure("Confusion matrix", cm, global_step)
 
     if args.use_tensorboard:
@@ -222,7 +219,7 @@ def validate(model, device, val_loader, args, out=False):
     model.eval()
     val_ce_loss = 0.
     top_acc = 0.
-    top_5_acc = 0.
+    # top_5_acc = 0.
 
     tick = datetime.datetime.now()
     with torch.no_grad():
@@ -357,13 +354,13 @@ def main():
 
     elif args.img_load_src == 'directory':
         if args.dataset == "gmdb":
-            dataset_train = GestaltMatcherDatasetDir( split_dir=os.path.join(args.data_dir,'train'),
-                                                      in_channels=args.in_channels, img_postfix='', augment=True,
-                                                      img_extension='.jpg', target_labels=args.target_class_labels)
+            dataset_train = GestaltMatcherDatasetDir(split_dir=os.path.join(args.data_dir, args.train_dir),
+                                                     in_channels=args.in_channels, img_postfix='', augment=True,
+                                                     img_extension='.jpg', target_labels=args.target_class_labels)
 
             dataset_val = GestaltMatcherDatasetDir(split_dir=os.path.join(args.data_dir, 'test'),
-                                                     in_channels=args.in_channels, img_postfix='', augment=False,
-                                                     img_extension='.jpg', target_labels=args.target_class_labels)
+                                                   in_channels=args.in_channels, img_postfix='', augment=False,
+                                                   img_extension='.jpg', target_labels=args.target_class_labels)
 
         elif args.dataset == "gmdb_aug":
             pass
@@ -372,7 +369,7 @@ def main():
     try:
         dist = dataset_train.get_distribution()
         print(f"Training dataset distribution: {dist}")
-    except(AttributeError):
+    except AttributeError:
         dist = None
 
     # Set the batch size of the validation set loader to as high as possible (max = args.batch_size)
@@ -384,7 +381,6 @@ def main():
                                              worker_init_fn=seed_worker,
                                              batch_size=args.val_bs)
 
-    
     # Attempt to deal with data imbalance: inverse frequency divided by lowest frequency class (min: 0.5, max: 1.0)
     if dist is not None:
         args.ce_weights = (torch.tensor([(sum(dist) / freq) / (sum(dist) / min(dist)) for freq in dist]).float()
@@ -426,9 +422,9 @@ def main():
     # Call explicit model weight initialization
     model.init_layer_weights()
     
-    ## Continue training/testing:
-    #Load pretrained CASIA model
-    #model.load_state_dict(torch.load(f"saved_models/<saved weights>.pt", map_location=device))
+    # Continue training/testing:
+    # Load pretrained CASIA model
+    # model.load_state_dict(torch.load(f"saved_models/<saved weights>.pt", map_location=device))
     
     train(args, model, device, train_loader, optimizer, val_loader=val_loader, scheduler=scheduler)
     validate(model, device, val_loader, args, out=True)
