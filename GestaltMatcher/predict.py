@@ -56,6 +56,9 @@ def parse_args():
 
     parser.add_argument('--data_dir', default='../data/GestaltMatcherDB/images_cropped', dest='data_dir',
                         help='Path to the data directory containing the images to run the model on.')
+    parser.add_argument('--model_path', default="saved_models/s2_gmdb_aug_adam_DeepGestalt_e310_ReLU_BN_bs280.pt",
+                        dest='model_path',
+                        help='Path to the GestaltMatcher snapshot.')
 
     return parser.parse_args()
 
@@ -150,7 +153,7 @@ def main():
         model.load_state_dict(
             #torch.load(f"saved_models/s1_casia_adam_FaceRecogNet_e50_ReLU_BN_bs100.pt",
             #torch.load(f"saved_models/s2_gmdb_aug_adam_DeepGestalt_e310_ReLU_BN_bs280.pt",
-            torch.load(f"saved_models/classifier/cross_validation_1_1_weightedsynth/sNone_gmdb_adam_DeepGestalt_e243_ReLU_bs32.pt",
+            torch.load(args.model_path,
             #torch.load(f"saved_models/encoderdecoder_test.pt",
             # torch.load(f"saved_models/s3_gmdb_aug_adam_DeepGestalt_e150_ReLU_bs280.pt",
                        map_location=device))
