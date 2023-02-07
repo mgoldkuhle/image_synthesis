@@ -26,16 +26,17 @@ for(method_name in max_accs$method){
   max_accs$max_acc[max_accs$method == method_name] <- acc_curve %>% filter(method == method_name) %>% select(Value) %>% max() %>% round(4)
 }
 
-accs_vs <- acc_curve %>% filter(method == "orig" | method == "weightedsynth")
+accs_vs <- acc_curve %>% filter(method == "orig" | method == "justweightedsynth")
 
 g <- accs_vs %>%
   ggplot(aes(x = idx, y = Value, color = method)) +
   geom_line(alpha=0.2, show.legend = FALSE) +
-  geom_smooth(span = 0.3, alpha=0.2, method = 'loess', show.legend = FALSE) +
-  scale_y_continuous(limits = c(0.6, 0.99)) +
+  geom_smooth(span = 0.3, alpha=0.4, method = 'loess', show.legend = FALSE) +
+  scale_y_continuous(limits = c(0.6, 0.9)) +
 #  stat_summary(fun.data ="mean_sdl", fun.args = list(mult=1), geom = "smooth") +
   xlab("Epochs") +
   ylab("Accuracy") +
+  scale_color_discrete(limits=c("orig", "justweightedsynth")) +
 # ggtitle("GestaltMatcher Accuracy with and without added synthetic data") +
   theme_minimal(base_size = 20)
 g
@@ -73,3 +74,4 @@ h <- accs_vs %>%
   ylab("Cumulative Maximum Accuracy") +
   theme_minimal(base_size = 16)
 h
+
