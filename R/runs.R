@@ -117,19 +117,24 @@ lm_eqn <- function(df){
 
 g <- runs %>% ggplot(aes(x = num_images, y = best_kid)) +
   geom_point(aes(color = syndrome)) +
-  scale_x_continuous(limits = c(-10, 320)) +
   geom_smooth(method = "lm", se = FALSE, colour = "grey", size=0.5) +
-  geom_text(x = 250, y = 0.0095, label = lm_eqn(runs), parse = TRUE, colour = "grey") +
+#  geom_text(x = 250, y = 0.0095, label = lm_eqn(runs), parse = TRUE, colour = "grey") +
+  scale_x_continuous(limits = c(-10, 320)) +
   xlab("Number of Images") + 
   ylab("Best KID") +
   theme_minimal(base_size = 16)
 g
 
+
+model <- runs %>% 
+  lm(formula = best_kid ~ num_images, data = .)
+summary(model)
+
 h <- runs %>% filter(setup %in% c("00073", "00074", "00075", "00076", "00077", "00078")) %>% 
   ggplot(aes(x = num_images, y = best_kid)) +
   geom_point(colour = "blue") +
+  geom_smooth(method = "lm", formula = y ~ x,se = FALSE, colour = "grey", size=0.5) +
   scale_x_continuous(limits = c(-10, 320)) +
-  geom_smooth(method = "lm", se = FALSE, colour = "grey", size=0.5) +
   xlab("Number of Images") + 
   ylab("Best KID") +
   theme_minimal(base_size = 16)
