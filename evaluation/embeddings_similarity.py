@@ -12,8 +12,8 @@ def cosine_similarity(a, b):
 
 
 encodings_dir = "C:/Users/Manu/ownCloud/IGSB/thesis/synthesis/results/encodings/"
-file_name_orig = "encodings_gmdb_12.csv"
-file_name_synth = "encodings_1_2_synth_12.csv"
+file_name_orig = "encodings_gmdb_3.csv"
+file_name_synth = "encodings_selection_3.csv"
 
 f_orig = os.path.join(encodings_dir, file_name_orig)
 f_synth = os.path.join(encodings_dir, file_name_synth)

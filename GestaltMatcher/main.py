@@ -358,7 +358,7 @@ def main():
                                                      in_channels=args.in_channels, img_postfix='', augment=True,
                                                      img_extension='.jpg', target_labels=args.target_class_labels)
 
-            dataset_val = GestaltMatcherDatasetDir(split_dir=os.path.join(args.data_dir, 'test'),
+            dataset_val = GestaltMatcherDatasetDir(split_dir=os.path.join(args.data_dir, 'val'),
                                                    in_channels=args.in_channels, img_postfix='', augment=False,
                                                    img_extension='.jpg', target_labels=args.target_class_labels)
 

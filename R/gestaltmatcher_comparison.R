@@ -9,7 +9,7 @@ library(lmerTest)
 scores <- read_csv("C:/users/manu/ownCloud/IGSB/thesis/synthesis/results/test_accuracies/metrics.csv")
 
 scores$fold <- factor(scores$cv)
-scores$method <- factor(scores$setup)
+scores$method <- factor(scores$setup, labels=c("augmented", "original", "synthetic"))
 
 scores  %>%
   ggplot(aes(x=method, y=accuracy)) +
@@ -19,7 +19,7 @@ scores  %>%
   ylab("") +
   xlab("") +
 #  scale_x_discrete(labels=c("synthetic", "original", "original + weighted synth")) +
-  theme_minimal(base_size=20)
+  theme_minimal(base_size=24)
 
 
 tests <- tibble(

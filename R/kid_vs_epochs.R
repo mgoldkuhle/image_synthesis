@@ -87,7 +87,7 @@ run_means %>%
 
 runs %>% 
   ggplot(aes(x = kimg, y = kid)) +
-  geom_smooth(aes(color = syndrome), alpha = 0, show.legend = FALSE, span=0.4) +
+  geom_smooth(aes(color = syndrome), alpha = 0, show.legend = FALSE, span=0.34) +
   coord_cartesian(ylim=c(0, 0.035)) +
   xlab("Epochs") +
   ylab("KID") +

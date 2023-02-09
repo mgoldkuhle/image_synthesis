@@ -125,7 +125,7 @@ for setup in setups:
 
     plt.figure(figsize=(10, 7))
     class_names = ['CdLS', 'WBS', 'KS', 'AS', 'HPMRS']
-    df_cm = mean_metrics['cm'][ix2]
+    df_cm = mean_metrics['cm'][5]
     heatmap = sns.heatmap(df_cm, cmap="crest", annot=True, fmt=".1f")
     heatmap.yaxis.set_ticklabels(heatmap.yaxis.get_ticklabels(), rotation=0, ha='right', fontsize=15)
     heatmap.xaxis.set_ticklabels(heatmap.xaxis.get_ticklabels(), rotation=45, ha='right', fontsize=15)

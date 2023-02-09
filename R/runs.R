@@ -130,6 +130,11 @@ model <- runs %>%
   lm(formula = best_kid ~ num_images, data = .)
 summary(model)
 
+anova_model <- runs %>% filter(!is.na(syndrome)) %>%
+  lm(best_kid ~ syndrome, data = .)
+aov(anova_model)
+pairwise.t.test(runs$best_kid, runs$syndrome, p.adj = "none")
+
 h <- runs %>% filter(setup %in% c("00073", "00074", "00075", "00076", "00077", "00078")) %>% 
   ggplot(aes(x = num_images, y = best_kid)) +
   geom_point(colour = "blue") +
