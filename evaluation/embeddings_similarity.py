@@ -1,7 +1,7 @@
-# encodings are generated with cd gestaltmatcher -> python predict.py --data_dir ../../data/crops_256_12 --num_classes 5
+# encodings are generated with cd gestaltmatcher -> predict.py
 
 import pandas as pd
-from numpy import dot, argmax
+from numpy import dot
 from numpy.linalg import norm
 import os
 

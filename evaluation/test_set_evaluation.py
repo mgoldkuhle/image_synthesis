@@ -38,6 +38,7 @@ predictions = pd.DataFrame()
 conf_matrices = {'setup': [], 'cv': [], 'conf_mat': [], 'accuracy': [], 'sensitivity_0': [],
                  'sensitivity_1': [], 'sensitivity_2': [], 'sensitivity_3': [], 'sensitivity_12': []}
 
+# predict test set classes, generate confidence matrices and calculate metrics
 for setup in setups:
     encodings_dir_setup = os.path.join(encodings_dir, setup)
     for cv in cvs:
@@ -99,11 +100,6 @@ for setup in setups:
         ix += 1
 
 
-def df_mean(list_of_dfs):
-    avg_df = (list_of_dfs[0] + list_of_dfs[1] + list_of_dfs[2] + list_of_dfs[3] + list_of_dfs[4]) / 5
-    return avg_df
-
-
 # mean confusion matrices
 mean_cm_orig = (conf_mats['conf_mat'][0] + conf_mats['conf_mat'][1] + conf_mats['conf_mat'][2] + conf_mats['conf_mat'][3] + conf_mats['conf_mat'][4]) / 5
 mean_cm_augmented = (conf_mats['conf_mat'][5] + conf_mats['conf_mat'][6] + conf_mats['conf_mat'][7] + conf_mats['conf_mat'][8] + conf_mats['conf_mat'][9]) / 5
@@ -113,6 +109,7 @@ mean_metrics['cm'].append(mean_cm_orig)
 mean_metrics['cm'].append(mean_cm_augmented)
 mean_metrics['cm'].append(mean_cm_synthetic)
 
+# calculate mean metrics and save plots and metrics
 ix2 = 0
 for setup in setups:
     mean_metrics['setup'].append(setup)
