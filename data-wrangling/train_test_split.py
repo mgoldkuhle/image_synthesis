@@ -7,10 +7,10 @@ import random
 import shutil
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--in_path', default='./data', help='Path for the images to be compared to. Can be directory of images or single image file')
+parser.add_argument('--in_path', default='./data', help='Complete data directory')
 parser.add_argument('--frac', default=0.8, type=float, help='Fraction p of data to be kept in training set. 1-p will be test set.')
-parser.add_argument('--out_train', default='./data/train', help='Directory for the images to compare. Can be directory of images or single image file')
-parser.add_argument('--out_test', default='./data/test', help='Directory for the output files')
+parser.add_argument('--out_train', default='./data/train', help='Out directory for training set')
+parser.add_argument('--out_test', default='./data/test', help='Out directory for test set')
 args = parser.parse_args()
 
 if __name__ == '__main__':
